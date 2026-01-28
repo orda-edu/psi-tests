@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="kk">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Online Test Platform</title>
+    <style>
+      /* --- 1. НЕГІЗГІ СТИЛЬДЕР --- */
+      body { 
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+        background-color: #f0f2f5; 
+        margin: 0; 
+        padding: 0; 
+        color: #1c1e21; 
+      }
+
+      /* Орталық контейнер (Карточка) */
+      .container { 
+        max-width: 550px; 
+        margin: 40px auto; 
+        background: #ffffff; 
+        padding: 30px; 
+        border-radius: 20px; 
+        box-shadow: 0 10px 40px rgba(0,0,0,0.08); 
+      }
+
+      h2, h3 { 
+        text-align: center; 
+        color: #333; 
+        font-weight: 700; 
+        margin-bottom: 25px;
+      }
+
+      /* INPUT өрістері */
+      input[type="text"], 
+      input[type="password"], 
+      select { 
+        width: 100%; 
+        padding: 16px; 
+        margin-bottom: 20px; 
+        border: 2px solid #e4e6eb; 
+        border-radius: 12px; 
+        box-sizing: border-box; 
+        font-size: 16px; 
+        background: #f7f8fa; 
+        transition: 0.3s;
+      }
+      
+      input:focus, select:focus { 
+        outline: none; 
+        border-color: #007bff; 
+        background: #fff; 
+      }
+      
+      label {
+        font-weight: 600;
+        font-size: 14px;
+        color: #606770;
+        margin-bottom: 8px;
+        display: block;
+        margin-left: 4px;
+      }
+
+      /* БАТЫРМАЛАР (Button) */
+      button { 
+        width: 100%; 
+        padding: 18px; 
+        background-color: #007bff; 
+        color: white; 
+        border: none; 
+        border-radius: 12px; 
+        font-size: 17px; 
+        font-weight: 600; 
+        cursor: pointer; 
+        transition: transform 0.1s, background 0.2s; 
+        box-shadow: 0 4px 12px rgba(0,123,255,0.2);
+      }
+      
+      button:active { transform: scale(0.98); }
+      button:disabled { background-color: #bcc0c4; cursor: not-allowed; box-shadow: none; }
+
+      /* ТІЛ ТАҢДАУ */
+      .lang-container { 
+        opacity: 0.5; pointer-events: none; transition: 0.3s; margin-top: 15px; 
+      }
+      .lang-container.active { opacity: 1; pointer-events: all; }
+      
+      .lang-group { display: flex; gap: 12px; }
+      
+      .lang-btn { 
+        flex: 1; 
+        padding: 14px; 
+        border: 2px solid #e4e6eb; 
+        border-radius: 12px; 
+        text-align: center; 
+        font-weight: bold; 
+        color: #606770; 
+        cursor: pointer; 
+        transition: 0.2s; 
+      }
+      
+      .lang-btn.selected { 
+        border-color: #007bff; 
+        background-color: #e7f5ff; 
+        color: #007bff; 
+      }
+
+      /* СҰРАҚТАР ДИЗАЙНЫ */
+      .question-block { 
+        background: #fff; 
+        border: 1px solid #e4e6eb; 
+        border-radius: 16px; 
+        padding: 20px; 
+        margin-bottom: 24px; 
+      }
+      
+      .question-block h4 { margin-top: 0; font-size: 18px; line-height: 1.5; color: #1c1e21; }
+      
+      .radio-label { 
+        display: flex; 
+        align-items: center; 
+        padding: 14px; 
+        margin: 8px 0; 
+        cursor: pointer; 
+        border-radius: 10px; 
+        background-color: #f7f8fa; 
+        transition: 0.2s;
+        border: 1px solid transparent;
+      }
+      
+      .radio-label:active { background-color: #e4e6eb; }
+      .radio-label input { width: 22px; height: 22px; margin-right: 15px; accent-color: #007bff; }
+
+      /* --- НӘТИЖЕ ПАРАҚШАСЫ (ӘДЕМІ ДИЗАЙН) --- */
+      .result-circle {
+        width: 180px;
+        height: 180px;
+        background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+        border-radius: 50%;
+        margin: 0 auto 30px auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 10px 25px rgba(46, 125, 50, 0.2);
+        animation: popIn 0.5s ease-out;
+      }
+
+      @keyframes popIn {
+        0% { transform: scale(0); opacity: 0; }
+        80% { transform: scale(1.1); }
+        100% { transform: scale(1); opacity: 1; }
+      }
+
+      .score-label { font-size: 16px; color: #2e7d32; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
+      .score-value { font-size: 64px; font-weight: 800; color: #1b5e20; line-height: 1; }
+      
+      /* --- МОБИЛЬДІК АДАПТАЦИЯ --- */
+      @media screen and (max-width: 600px) {
+        .container { 
+          width: 100%; max-width: 100%; margin: 0; border-radius: 0; box-shadow: none; 
+          min-height: 100vh; display: flex; flex-direction: column; padding: 20px;
+        }
+        
+        #test-view, #setup-view { padding-bottom: 100px; /* Кнопка астында қалмауы үшін */ }
+        
+        /* Төменгі бекітілген батырма */
+        #start-btn, #submit-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            width: calc(100% - 40px);
+            z-index: 100;
+            box-shadow: 0 8px 20px rgba(0,123,255,0.4);
+        }
+      }
+
+      .hidden { display: none !important; }
+      .error-msg { color: #d93025; text-align: center; margin-top: 15px; font-weight: 600; }
+      #loader { text-align: center; color: #606770; margin: 20px 0; font-style: italic; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div id="loader" class="hidden">Мәліметтер жүктелуде... / Загрузка...</div>
+
+      <div id="login-view">
+        <h2>Жүйеге кіру / Вход</h2>
+        
+        <label>ID (Логин)</label>
+        <input type="text" id="login" placeholder="ps001">
+        
+        <label>Құпия сөз / Пароль</label>
+        <input type="password" id="password" placeholder="******">
+        
+        <button onclick="doLogin()">Кіру / Вход</button>
+        <p id="login-error" class="error-msg"></p>
+      </div>
+
+      <div id="setup-view" class="hidden">
+        <h3>Сәлем / Привет, <span id="user-name" style="color: #007bff;"></span>!</h3>
+        
+        <label>Тестті таңдаңыз / Выберите тест:</label>
+        <select id="test-select" onchange="enableLangSelection()">
+          <option value="">Жүктелуде...</option>
+        </select>
+
+        <div id="lang-section" class="lang-container">
+          <label>Тіл / Язык:</label>
+          <div class="lang-group">
+            <div class="lang-btn" onclick="selectLang('KZ', this)">QAZ</div>
+            <div class="lang-btn" onclick="selectLang('RU', this)">RUS</div>
+            <div class="lang-btn" onclick="selectLang('EN', this)">ENG</div>
+          </div>
+        </div>
+
+        <button id="start-btn" onclick="startTest()" disabled>Бастау / Начать</button>
+      </div>
+
+      <div id="test-view" class="hidden">
+        <h3 id="test-title">Тест</h3>
+        <div id="questions-container"></div>
+        <button id="submit-btn" onclick="submitTest()" style="background-color: #28a745;">Аяқтау / Завершить</button>
+      </div>
+
+      <div id="result-view" class="hidden" style="text-align: center; padding-top: 20px;">
+        <h2>Нәтиже / Результат</h2>
+        
+        <div class="result-circle">
+          <span class="score-label">ҰП АЙ / БАЛЛ</span>
+          <span id="final-score" class="score-value">0</span>
+        </div>
+        
+        <p style="color: #666; margin-bottom: 30px;">Тест аяқталды. Нәтиже жүйеге сақталды.<br>Тест завершен. Результат сохранен.</p>
+        
+        <button onclick="location.reload()" style="background-color: #6c757d; box-shadow: none;">Шығу / Выход</button>
+      </div>
+    </div>
+
+    <script>
+      // ======================================================
+      // МЫНА ЖЕРГЕ ЖАҢА DEPLOY СІЛТЕМЕСІН ҚОЙЫҢЫЗ:
+      // ======================================================
+      const API_URL = "https://script.google.com/macros/s/AKfycbzUctoJXnlcnp0Vwzgg0uMiA6mGlzE9Gp6xp_IVJwX_eZFUJy72bJofrJPMnKWG6Uwh/exec"; 
+      
+      var currentUser = {};
+      var selectedLang = "";
+
+      function toggleLoader(show) {
+        document.getElementById('loader').classList.toggle('hidden', !show);
+      }
+
+      // --- FETCH ФУНКЦИЯСЫ (ҚАТЕЛЕРДІ ЖӨНДЕУМЕН) ---
+      async function fetchData(params, postBody = null) {
+        try {
+          let url = API_URL + "?" + new URLSearchParams(params);
+          let options = { redirect: "follow" };
+          
+          if (postBody) {
+            options.method = "POST";
+            options.headers = { "Content-Type": "text/plain;charset=utf-8" };
+            options.body = JSON.stringify(postBody);
+          }
+
+          let response = await fetch(url, options);
+          if (!response.ok) throw new Error("Server Error: " + response.status);
+          
+          let text = await response.text();
+          try {
+            return JSON.parse(text);
+          } catch (e) {
+            throw new Error("Сервер жауабы бұрыс.");
+          }
+        } catch (e) {
+          alert("Байланыс қатесі: " + e.message);
+          return null;
+        }
+      }
+
+      // 1. ЛОГИН
+      async function doLogin() {
+        var log = document.getElementById('login').value;
+        var pass = document.getElementById('password').value;
+        if(!log || !pass) return;
+
+        toggleLoader(true);
+        var res = await fetchData({ action: 'login', login: log, password: pass });
+        
+        if (res && res.status === 'success') {
+          currentUser = res;
+          document.getElementById('login-view').classList.add('hidden');
+          document.getElementById('setup-view').classList.remove('hidden');
+          document.getElementById('user-name').innerText = res.name;
+          loadTestNames();
+        } else {
+          toggleLoader(false);
+          document.getElementById('login-error').innerText = "Логин немесе пароль қате!";
+        }
+      }
+
+      // 2. БАПТАУЛАР
+      async function loadTestNames() {
+        var res = await fetchData({ action: 'getTestNames' });
+        toggleLoader(false);
+        var sel = document.getElementById('test-select');
+        sel.innerHTML = '<option value="">Таңдаңыз / Выберите...</option>';
+        if (res && res.status === 'success') {
+          res.tests.forEach(t => {
+            var opt = document.createElement('option');
+            opt.value = t; opt.innerText = t; sel.appendChild(opt);
+          });
+        }
+      }
+
+      function enableLangSelection() {
+        var testName = document.getElementById('test-select').value;
+        var langSection = document.getElementById('lang-section');
+        if (testName) {
+          langSection.classList.add('active');
+        } else {
+          langSection.classList.remove('active');
+          document.getElementById('start-btn').disabled = true;
+        }
+      }
+
+      function selectLang(lang, btn) {
+        selectedLang = lang;
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        document.getElementById('start-btn').disabled = false;
+      }
+
+      // 3. ТЕСТТІ БАСТАУ (ЛИМИТ ТЕКСЕРУМЕН)
+      async function startTest() {
+        var testName = document.getElementById('test-select').value;
+        toggleLoader(true);
+        
+        // Лимит тексеру үшін 'userName' жібереміз
+        var res = await fetchData({ 
+            action: 'getQuestions', 
+            testName: testName, 
+            lang: selectedLang,
+            userName: currentUser.name 
+        });
+        
+        toggleLoader(false);
+
+        if (res && res.status === 'success') {
+          renderQuestions(res.questions, testName);
+        } else {
+          // Егер лимит бітсе немесе сұрақ табылмаса
+          alert(res.message || "Сұрақтар жүктелмеді");
+        }
+      }
+
+      function renderQuestions(questions, title) {
+        document.getElementById('setup-view').classList.add('hidden');
+        document.getElementById('test-view').classList.remove('hidden');
+        document.getElementById('test-title').innerText = title;
+        
+        var container = document.getElementById('questions-container');
+        container.innerHTML = "";
+        window.scrollTo(0,0);
+
+        questions.forEach((q, index) => {
+          var div = document.createElement('div');
+          div.className = 'question-block';
+          div.innerHTML = `<h4>${index + 1}. ${q.question}</h4>`;
+          
+          if(q.type === 'text') {
+            div.innerHTML += `<input type="text" name="q-${q.id}" placeholder="Жауабыңыз..." autocomplete="off">`;
+          } else {
+            q.options.forEach(opt => {
+              div.innerHTML += `
+                <label class="radio-label">
+                  <input type="radio" name="q-${q.id}" value="${opt}">
+                  <span>${opt}</span>
+                </label>`;
+            });
+          }
+          container.appendChild(div);
+        });
+      }
+
+      // 4. ТЕСТТІ АЯҚТАУ
+      async function submitTest() {
+        if(!confirm("Аяқтауға сенімдісіз бе?")) return;
+        
+        var answers = {};
+        document.querySelectorAll('input[type=text], input[type=radio]:checked').forEach(inp => {
+          answers[inp.name.replace('q-', '')] = inp.value;
+        });
+
+        // Егер жауап бермесе де, 0 алу үшін жібереміз, бірақ ескертеміз
+        if (Object.keys(answers).length === 0) {
+           if(!confirm("Ешқандай жауап белгілемедіңіз. 0 ұпай аласыз. Жалғастыру?")) return;
+        }
+
+        toggleLoader(true);
+
+        var res = await fetchData({ action: 'submit' }, {
+            userInfo: currentUser,
+            testName: document.getElementById('test-title').innerText,
+            answers: answers
+        });
+        
+        toggleLoader(false);
+
+        if (res && res.status === 'success') {
+          document.getElementById('test-view').classList.add('hidden');
+          document.getElementById('result-view').classList.remove('hidden');
+          document.getElementById('final-score').innerText = res.score;
+        } else {
+          alert("ҚАТЕ: " + (res.message || "Белгісіз қате"));
+        }
+      }
+    </script>
+  </body>
+</html>
