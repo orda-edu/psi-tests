@@ -228,7 +228,7 @@
         <h2>Нәтиже / Результат</h2>
         
         <div class="result-circle">
-          <span class="score-label">ҰП АЙ / БАЛЛ</span>
+          <span class="score-label">ҰПАЙ / БАЛЛ</span>
           <span id="final-score" class="score-value">0</span>
         </div>
         
@@ -240,18 +240,19 @@
 
     <script>
       // ======================================================
-      // МЫНА ЖЕРГЕ ЖАҢА DEPLOY СІЛТЕМЕСІН ҚОЙЫҢЫЗ:
+      // СІЗДІҢ СКРИПТ СІЛТЕМЕҢІЗ:
       // ======================================================
       const API_URL = "https://script.google.com/macros/s/AKfycbzUctoJXnlcnp0Vwzgg0uMiA6mGlzE9Gp6xp_IVJwX_eZFUJy72bJofrJPMnKWG6Uwh/exec"; 
       
       var currentUser = {};
       var selectedLang = "";
+      var currentTestName = ""; // ТЕСТ АТЫН САҚТАЙТЫН АЙНЫМАЛЫ
 
       function toggleLoader(show) {
         document.getElementById('loader').classList.toggle('hidden', !show);
       }
 
-      // --- FETCH ФУНКЦИЯСЫ (ҚАТЕЛЕРДІ ЖӨНДЕУМЕН) ---
+      // --- FETCH ФУНКЦИЯСЫ ---
       async function fetchData(params, postBody = null) {
         try {
           let url = API_URL + "?" + new URLSearchParams(params);
@@ -331,12 +332,16 @@
         document.getElementById('start-btn').disabled = false;
       }
 
-      // 3. ТЕСТТІ БАСТАУ (ЛИМИТ ТЕКСЕРУМЕН)
+      // 3. ТЕСТТІ БАСТАУ
       async function startTest() {
         var testName = document.getElementById('test-select').value;
+        
+        // --- ТҮЗЕТУ: ТЕСТ АТЫН АЙНЫМАЛЫҒА САҚТАЙМЫЗ ---
+        currentTestName = testName; 
+        // ----------------------------------------------
+
         toggleLoader(true);
         
-        // Лимит тексеру үшін 'userName' жібереміз
         var res = await fetchData({ 
             action: 'getQuestions', 
             testName: testName, 
@@ -349,7 +354,6 @@
         if (res && res.status === 'success') {
           renderQuestions(res.questions, testName);
         } else {
-          // Егер лимит бітсе немесе сұрақ табылмаса
           alert(res.message || "Сұрақтар жүктелмеді");
         }
       }
@@ -357,7 +361,10 @@
       function renderQuestions(questions, title) {
         document.getElementById('setup-view').classList.add('hidden');
         document.getElementById('test-view').classList.remove('hidden');
+        
+        // --- ДИЗАЙН: Экранға студенттің атын шығарамыз ---
         document.getElementById('test-title').innerText = currentUser.name;
+        // ------------------------------------------------
         
         var container = document.getElementById('questions-container');
         container.innerHTML = "";
@@ -392,18 +399,19 @@
           answers[inp.name.replace('q-', '')] = inp.value;
         });
 
-        // Егер жауап бермесе де, 0 алу үшін жібереміз, бірақ ескертеміз
         if (Object.keys(answers).length === 0) {
            if(!confirm("Ешқандай жауап белгілемедіңіз. 0 ұпай аласыз. Жалғастыру?")) return;
         }
 
         toggleLoader(true);
 
+        // --- ТҮЗЕТУ: СЕРВЕРГЕ САҚТАЛҒАН ТЕСТ АТЫН ЖІБЕРЕМІЗ ---
         var res = await fetchData({ action: 'submit' }, {
             userInfo: currentUser,
-            testName: document.getElementById('test-title').innerText,
+            testName: currentTestName, // <--- ЭКРАННАН ЕМЕС, АЙНЫМАЛЫДАН АЛАМЫЗ
             answers: answers
         });
+        // ----------------------------------------------------
         
         toggleLoader(false);
 
@@ -417,5 +425,4 @@
       }
     </script>
   </body>
-
 </html>
