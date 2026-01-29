@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dina apai test</title>
+    <title>Orda psi test</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -353,20 +353,64 @@
         });
       }
 
-      // 4. SUBMIT
+     // 4. SUBMIT (ТОЛЫҚ БЕЛГІЛЕУДІ МІНДЕТТЕУ)
       async function submitTest() {
         var btn = document.getElementById('submit-btn');
         if (btn.disabled) return;
+
+        // 1. БАРЛЫҚ СҰРАҚТАРДЫ ТЕКСЕРУ
+        var questionBlocks = document.querySelectorAll('.question-block');
+        var allAnswered = true;
+        var firstUnanswered = null;
+
+        questionBlocks.forEach(block => {
+            // Блок ішіндегі input-тарды іздейміз
+            var textInput = block.querySelector('input[type=text]');
+            var radios = block.querySelectorAll('input[type=radio]');
+            var isAnswered = false;
+
+            // Егер текстік сұрақ болса
+            if (textInput) {
+                if (textInput.value.trim() !== "") isAnswered = true;
+            } 
+            // Егер тест (radio) болса
+            else if (radios.length > 0) {
+                radios.forEach(r => { if (r.checked) isAnswered = true; });
+            }
+
+            // Егер жауап берілмесе - ҚЫЗЫЛМЕН БОЯУ
+            if (!isAnswered) {
+                allAnswered = false;
+                block.style.border = "2px solid #ef4444"; // Қызыл жиек
+                block.style.borderRadius = "10px";
+                block.style.padding = "10px";
+                block.style.backgroundColor = "#fee2e2"; // Ашық қызыл фон
+                
+                if (!firstUnanswered) firstUnanswered = block; // Ең бірінші қатені есте сақтау
+            } else {
+                // Жауап берілсе, стильді тазалау
+                block.style.border = "none";
+                block.style.backgroundColor = "transparent";
+            }
+        });
+
+        // 2. ЕГЕР БЕЛГІЛЕНБЕГЕН СҰРАҚ БОЛСА - ТОҚТАТУ
+        if (!allAnswered) {
+            alert("Қате: Барлық сұрақтарға жауап беру міндетті!\nБелгіленбеген сұрақтар қызыл түспен көрсетілді.");
+            // Жауапсыз қалған бірінші сұраққа апару (scroll)
+            if (firstUnanswered) {
+                firstUnanswered.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            return; // Функцияны осы жерден тоқтатамыз
+        }
+
+        // 3. БАРЛЫҒЫ ДҰРЫС БОЛСА - ЖІБЕРУ
         if(!confirm("Аяқтауға сенімдісіз бе?")) return;
         
         var answers = {};
         document.querySelectorAll('input[type=text], input[type=radio]:checked').forEach(inp => {
           answers[inp.name.replace('q-', '')] = inp.value;
         });
-
-        if (Object.keys(answers).length === 0) {
-           if(!confirm("Жауап белгілемедіңіз. Жалғастырасыз ба?")) return;
-        }
 
         btn.disabled = true;
         btn.innerText = "Жіберілуде...";
