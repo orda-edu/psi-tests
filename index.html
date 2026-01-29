@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dina apai Platform</title>
+    <title>Dina apai test</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-      /* --- 1. ЖАҢАРТЫЛҒАН ДИЗАЙН (MODERN UI) --- */
+      /* --- ДИЗАЙН --- */
       :root {
-        --primary-color: #4f46e5; /* Индиго түсі */
+        --primary-color: #4f46e5;
         --primary-hover: #4338ca;
         --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         --card-bg: #ffffff;
@@ -24,223 +24,106 @@
         margin: 0; padding: 0; 
         color: var(--text-main);
         min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        display: flex; align-items: center; justify-content: center;
       }
 
-      /* Контейнер */
       .container { 
-        width: 100%;
-        max-width: 500px; 
-        margin: 20px; 
-        background: var(--card-bg); 
-        padding: 30px; 
-        border-radius: 24px; 
-        box-shadow: 0 20px 60px rgba(0,0,0,0.1); 
-        transition: height 0.3s ease;
+        width: 100%; max-width: 500px; margin: 20px; 
+        background: var(--card-bg); padding: 30px; 
+        border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.1); 
       }
 
-      h2, h3 { 
-        text-align: center; 
-        color: #111827; 
-        font-weight: 700; 
-        margin-bottom: 20px;
-        letter-spacing: -0.5px;
-      }
+      h2, h3 { text-align: center; color: #111827; font-weight: 700; margin-bottom: 20px; }
 
-      /* INPUTS & SELECTS */
-      input[type="text"], 
-      input[type="password"], 
-      select { 
-        width: 100%; 
-        padding: 16px; 
-        margin-bottom: 20px; 
-        border: 2px solid #e5e7eb; 
-        border-radius: 16px; 
-        box-sizing: border-box; 
-        font-size: 16px; 
-        background: #f9fafb; 
-        transition: 0.3s;
-        font-family: inherit;
+      /* Input Styles */
+      input[type="text"], input[type="password"], select { 
+        width: 100%; padding: 16px; margin-bottom: 20px; 
+        border: 2px solid #e5e7eb; border-radius: 16px; 
+        box-sizing: border-box; font-size: 16px; background: #f9fafb; 
+        transition: 0.3s; font-family: inherit;
       }
-      
       input:focus, select:focus { 
-        outline: none; 
-        border-color: var(--primary-color); 
-        background: #fff; 
-        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        outline: none; border-color: var(--primary-color); 
+        background: #fff; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
       }
       
-      label {
-        font-weight: 600;
-        font-size: 14px;
-        color: var(--text-secondary);
-        margin-bottom: 8px;
-        display: block;
-        margin-left: 4px;
-      }
+      label { font-weight: 600; font-size: 14px; color: var(--text-secondary); margin-bottom: 8px; display: block; margin-left: 4px; }
 
-      /* БАТЫРМАЛАР (Button) */
-      button { 
-        width: 100%; 
-        padding: 16px; 
-        background-color: var(--primary-color); 
-        color: white; 
-        border: none; 
-        border-radius: 16px; 
-        font-size: 16px; 
-        font-weight: 600; 
-        cursor: pointer; 
-        transition: all 0.2s; 
-        box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
-      }
-      
-      button:active { transform: scale(0.98); }
-      button:disabled { 
-        background-color: #d1d5db; 
-        cursor: not-allowed; 
-        box-shadow: none; 
-        color: #9ca3af;
-      }
-
-      /* ТІЛ ТАҢДАУ (TAB STYLE) */
-      .lang-container { 
-        opacity: 0.6; pointer-events: none; transition: 0.3s; margin-top: 20px; 
-      }
-      .lang-container.active { opacity: 1; pointer-events: all; }
-      
-      .lang-group { 
-        display: flex; 
-        gap: 10px; 
-        background: #f3f4f6; 
-        padding: 5px; 
-        border-radius: 14px; 
-      }
-      
-      .lang-btn { 
-        flex: 1; 
-        padding: 10px; 
-        border-radius: 10px; 
-        text-align: center; 
-        font-weight: 600; 
-        font-size: 14px;
-        color: var(--text-secondary); 
-        cursor: pointer; 
-        transition: 0.2s; 
-      }
-      
-      .lang-btn.selected { 
-        background-color: #fff; 
-        color: var(--primary-color); 
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-      }
-
-      /* СҰРАҚТАР ДИЗАЙНЫ */
-      .question-block { 
-        animation: fadeIn 0.4s ease;
-      }
-      
-      .question-text {
-        font-size: 18px;
-        font-weight: 600;
+      /* --- PASSWORD TOGGLE STYLES (ЖАҢА) --- */
+      .password-wrapper {
+        position: relative;
         margin-bottom: 20px;
-        line-height: 1.5;
-        color: #111827;
       }
-
-      /* ЖАУАП НҰСҚАЛАРЫ (CARD STYLE) */
-      .radio-label { 
-        display: flex; 
-        align-items: center; 
-        padding: 16px; 
-        margin: 12px 0; 
-        cursor: pointer; 
-        border-radius: 16px; 
-        background-color: #fff; 
-        border: 2px solid #e5e7eb;
-        transition: all 0.2s;
+      .password-wrapper input {
+        margin-bottom: 0; /* Wrapper handles spacing */
+        padding-right: 50px; /* Icon-ға орын қалдыру */
       }
-      
-      .radio-label:hover { 
-        background-color: #f9fafb; 
-        border-color: #d1d5db;
-      }
-      
-      /* Жауап таңдалғандағы стиль */
-      .radio-label input:checked + span {
-        color: var(--primary-color);
-        font-weight: 600;
-      }
-      
-      /* Жауап таңдалғанда блок түсі өзгереді (JavaScript арқылы класс қосу керек немесе CSS trick) 
-         CSS trick: input checked болса, ата-анасын өзгерту қиын, сондықтан input-қа focus қойғанда style береміз */
-      .radio-label:has(input:checked) {
-        border-color: var(--primary-color);
-        background-color: #eef2ff;
-      }
-
-      .radio-label input { 
-        width: 20px; 
-        height: 20px; 
-        margin-right: 15px; 
-        accent-color: var(--primary-color); 
-      }
-
-      /* --- НӘТИЖЕ ПАРАҚШАСЫ --- */
-      .result-circle {
-        width: 160px; height: 160px;
-        background: conic-gradient(var(--success-color) 0%, #d1fae5 0%); /* Динамикалық болуы мүмкін */
-        background-color: #ecfdf5;
-        border: 10px solid #d1fae5;
-        border-radius: 50%;
-        margin: 20px auto;
+      .toggle-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #9ca3af;
         display: flex;
-        flex-direction: column;
         align-items: center;
         justify-content: center;
-        animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        transition: color 0.2s;
       }
+      .toggle-icon:hover { color: var(--primary-color); }
+      .toggle-icon svg { width: 24px; height: 24px; }
 
-      @keyframes popIn {
-        0% { transform: scale(0); opacity: 0; }
-        100% { transform: scale(1); opacity: 1; }
+      /* Button Styles */
+      button { 
+        width: 100%; padding: 16px; background-color: var(--primary-color); 
+        color: white; border: none; border-radius: 16px; 
+        font-size: 16px; font-weight: 600; cursor: pointer; 
+        transition: all 0.2s; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
       }
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
+      button:active { transform: scale(0.98); }
+      button:disabled { background-color: #9ca3af !important; cursor: not-allowed; box-shadow: none; color: #f3f4f6; opacity: 0.8; }
 
+      /* Language Tabs */
+      .lang-container { opacity: 0.6; pointer-events: none; transition: 0.3s; margin-top: 20px; }
+      .lang-container.active { opacity: 1; pointer-events: all; }
+      .lang-group { display: flex; gap: 10px; background: #f3f4f6; padding: 5px; border-radius: 14px; }
+      .lang-btn { 
+        flex: 1; padding: 10px; border-radius: 10px; text-align: center; 
+        font-weight: 600; font-size: 14px; color: var(--text-secondary); 
+        cursor: pointer; transition: 0.2s; 
+      }
+      .lang-btn.selected { background-color: #fff; color: var(--primary-color); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+
+      /* Questions */
+      .question-block { animation: fadeIn 0.4s ease; }
+      .question-text { font-size: 18px; font-weight: 600; margin-bottom: 20px; line-height: 1.5; color: #111827; }
+
+      .radio-label { 
+        display: flex; align-items: center; padding: 16px; margin: 12px 0; 
+        cursor: pointer; border-radius: 16px; background-color: #fff; 
+        border: 2px solid #e5e7eb; transition: all 0.2s;
+      }
+      .radio-label:hover { background-color: #f9fafb; border-color: #d1d5db; }
+      .radio-label:has(input:checked) { border-color: var(--primary-color); background-color: #eef2ff; }
+      .radio-label input:checked + span { color: var(--primary-color); font-weight: 600; }
+      .radio-label input { width: 20px; height: 20px; margin-right: 15px; accent-color: var(--primary-color); }
+
+      /* Result */
+      .result-circle {
+        width: 160px; height: 160px; background-color: #ecfdf5; border: 10px solid #d1fae5;
+        border-radius: 50%; margin: 20px auto; display: flex; flex-direction: column; 
+        align-items: center; justify-content: center; animation: popIn 0.6s;
+      }
+      @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
       .score-value { font-size: 56px; font-weight: 800; color: #065f46; line-height: 1; }
-      
-      /* Header Badge (Студент аты) */
-      #test-title {
-        background: #eef2ff;
-        color: var(--primary-color);
-        padding: 10px 20px;
-        border-radius: 50px;
-        display: inline-block;
-        font-size: 16px;
-        margin-bottom: 30px;
-      }
+      #test-title { background: #eef2ff; color: var(--primary-color); padding: 10px 20px; border-radius: 50px; display: inline-block; font-size: 16px; margin-bottom: 30px; }
 
-      /* --- MOBILE --- */
       @media screen and (max-width: 600px) {
-        .container { 
-          margin: 0; 
-          border-radius: 0; 
-          min-height: 100vh; 
-          padding: 20px;
-          box-shadow: none;
-        }
-        #start-btn, #submit-btn {
-            position: fixed; bottom: 20px; left: 20px; right: 20px; 
-            width: calc(100% - 40px); z-index: 100; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
+        .container { margin: 0; border-radius: 0; min-height: 100vh; padding: 20px; box-shadow: none; }
+        #start-btn, #submit-btn { position: fixed; bottom: 20px; left: 20px; right: 20px; width: calc(100% - 40px); z-index: 100; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         #test-view { padding-bottom: 80px; }
       }
-
       .hidden { display: none !important; }
       .error-msg { color: #ef4444; text-align: center; margin-top: 15px; font-size: 14px; }
       #loader { text-align: center; color: var(--text-secondary); margin: 20px 0; font-size: 14px; }
@@ -248,7 +131,7 @@
   </head>
   <body>
     <div class="container">
-      <div id="loader" class="hidden">Мәліметтер жүктелуде...</div>
+      <div id="loader" class="hidden"> Мәліметтер жүктелуде...</div>
 
       <div id="login-view">
         <h2>Психологиялық тесттер</h2>
@@ -257,8 +140,13 @@
         <input type="text" id="login" placeholder="Мысалы: ps001">
         
         <label>Құпия сөз / Пароль</label>
-        <input type="password" id="password" placeholder="••••••">
-        
+        <div class="password-wrapper">
+            <input type="password" id="password" placeholder="••••••">
+            <div class="toggle-icon" onclick="togglePassword()">
+                <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            </div>
+        </div>
+
         <button onclick="doLogin()">Жүйеге кіру / Вход</button>
         <p id="login-error" class="error-msg"></p>
       </div>
@@ -266,13 +154,13 @@
       <div id="setup-view" class="hidden">
         <h3>Сәлем / Привет, <span id="user-name" style="color: var(--primary-color);"></span>!</h3>
         
-        <label>Тестті таңдаңыз / Выберите тест:</label>
+        <label>Тестті таңдаңыз / Выберите тест: <span style="color:red">*</span></label>
         <select id="test-select" onchange="enableLangSelection()">
-          <option value="">Жүктелуде... / Загрузка...</option>
+          <option value="" disabled selected>Тізімнен таңдаңыз...</option>
         </select>
 
         <div id="lang-section" class="lang-container">
-          <label>Тіл / Язык:</label>
+          <label>Тіл / Язык: <span style="color:red">*</span></label>
           <div class="lang-group">
             <div class="lang-btn" onclick="selectLang('KZ', this)">QAZ</div>
             <div class="lang-btn" onclick="selectLang('RU', this)">RUS</div>
@@ -284,37 +172,43 @@
 
       <div id="test-view" class="hidden" style="text-align: center;">
         <div id="test-title">Student Name</div>
-        
         <div id="questions-container" style="text-align: left;"></div>
-        
         <button id="submit-btn" onclick="submitTest()" style="background-color: var(--success-color);">Аяқтау / Завершить</button>
       </div>
 
       <div id="result-view" class="hidden" style="text-align: center; padding-top: 20px;">
         <h2>Нәтиже / Результат</h2>
-        
         <div class="result-circle">
           <span style="font-size: 14px; color: #065f46; font-weight: 600; margin-top: 10px;">ҰПАЙ / БАЛЛ</span>
           <span id="final-score" class="score-value">0</span>
         </div>
-        
-        <p style="color: #6b7280; margin-bottom: 30px; line-height: 1.6;">
-          Тест аяқталды. Нәтиже жүйеге сақталды.<br>Тест завершен. Результат сохранен.
-        </p>
-        
-        <button onclick="location.reload()" style="background-color: #9ca3af; box-shadow: none; color: #fff;">Шығу / Выход/button>
+        <p style="color: #6b7280; margin-bottom: 30px; line-height: 1.6;">Тест аяқталды.<br>Нәтиже сақталды.</p>
+        <button onclick="location.reload()" style="background-color: #9ca3af; box-shadow: none; color: #fff;">Шығу</button>
       </div>
     </div>
 
     <script>
-      // ======================================================
-      // СІЗДІҢ СКРИПТ СІЛТЕМЕҢІЗ:
-      // ======================================================
-      const API_URL = "https://script.google.com/macros/s/AKfycbzUctoJXnlcnp0Vwzgg0uMiA6mGlzE9Gp6xp_IVJwX_eZFUJy72bJofrJPMnKWG6Uwh/exec"; 
+      const API_URL = "https://script.google.com/macros/s/AKfycbwUnrHji-jm01CyEWH7WQQTzCR_wFtDSWdZLNBJFzl4i4mpiOrB5vMsRH1Q9CSIBafj/exec"; 
       
       var currentUser = {};
       var selectedLang = "";
       var currentTestName = ""; 
+
+      // --- ПАРОЛЬДІ КӨРСЕТУ/ЖАСЫРУ ФУНКЦИЯСЫ (ЖАҢА) ---
+      function togglePassword() {
+        var input = document.getElementById("password");
+        var iconDiv = document.querySelector(".toggle-icon");
+        
+        if (input.type === "password") {
+            input.type = "text";
+            // Eye Slash (Сызылған көз)
+            iconDiv.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
+        } else {
+            input.type = "password";
+            // Eye Open (Ашық көз)
+            iconDiv.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+        }
+      }
 
       function toggleLoader(show) {
         document.getElementById('loader').classList.toggle('hidden', !show);
@@ -324,18 +218,15 @@
         try {
           let url = API_URL + "?" + new URLSearchParams(params);
           let options = { redirect: "follow" };
-          
           if (postBody) {
             options.method = "POST";
             options.headers = { "Content-Type": "text/plain;charset=utf-8" };
             options.body = JSON.stringify(postBody);
           }
-
           let response = await fetch(url, options);
-          if (!response.ok) throw new Error("Server Error: " + response.status);
-          
+          if (!response.ok) throw new Error("Server Error");
           let text = await response.text();
-          try { return JSON.parse(text); } catch (e) { throw new Error("Сервер жауабы бұрыс."); }
+          try { return JSON.parse(text); } catch (e) { throw new Error("JSON Error"); }
         } catch (e) {
           alert("Байланыс қатесі: " + e.message); return null;
         }
@@ -362,12 +253,12 @@
         }
       }
 
-      // 2. SETUP
+      // 2. SETUP & VALIDATION
       async function loadTestNames() {
         var res = await fetchData({ action: 'getTestNames' });
         toggleLoader(false);
         var sel = document.getElementById('test-select');
-        sel.innerHTML = '<option value="">Таңдаңыз...</option>';
+        sel.innerHTML = '<option value="" disabled selected>Тізімнен таңдаңыз...</option>';
         if (res && res.status === 'success') {
           res.tests.forEach(t => {
             var opt = document.createElement('option');
@@ -379,15 +270,26 @@
       function enableLangSelection() {
         var testName = document.getElementById('test-select').value;
         var langSection = document.getElementById('lang-section');
+        var startBtn = document.getElementById('start-btn');
+
+        selectedLang = ""; 
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('selected'));
+        startBtn.disabled = true;
+
         if (testName) {
           langSection.classList.add('active');
         } else {
           langSection.classList.remove('active');
-          document.getElementById('start-btn').disabled = true;
         }
       }
 
       function selectLang(lang, btn) {
+        var testName = document.getElementById('test-select').value;
+        if (!testName) {
+            alert("Алдымен тестті таңдаңыз!");
+            return;
+        }
+
         selectedLang = lang;
         document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
@@ -397,8 +299,17 @@
       // 3. START TEST
       async function startTest() {
         var testName = document.getElementById('test-select').value;
-        currentTestName = testName; // Тест атын сақтаймыз
+        
+        if (!testName) {
+            alert("Қате: Тест таңдалмаған! Тізімнен тестті таңдаңыз.");
+            return;
+        }
+        if (!selectedLang) {
+            alert("Қате: Тіл таңдалмаған!");
+            return;
+        }
 
+        currentTestName = testName; 
         toggleLoader(true);
         
         var res = await fetchData({ 
@@ -413,15 +324,13 @@
         if (res && res.status === 'success') {
           renderQuestions(res.questions);
         } else {
-          alert(res.message || "Сұрақтар жүктелмеді");
+          alert(res.message || "Сұрақтар табылмады");
         }
       }
 
       function renderQuestions(questions) {
         document.getElementById('setup-view').classList.add('hidden');
         document.getElementById('test-view').classList.remove('hidden');
-        
-        // Студент атын әдемі қылып шығарамыз
         document.getElementById('test-title').innerText = currentUser.name;
         
         var container = document.getElementById('questions-container');
@@ -431,18 +340,12 @@
         questions.forEach((q, index) => {
           var div = document.createElement('div');
           div.className = 'question-block';
-          
           var html = `<div class="question-text">${index + 1}. ${q.question}</div>`;
-          
           if(q.type === 'text') {
-            html += `<input type="text" name="q-${q.id}" placeholder="Жауабыңызды жазыңыз..." autocomplete="off">`;
+            html += `<input type="text" name="q-${q.id}" placeholder="Жауап..." autocomplete="off">`;
           } else {
             q.options.forEach(opt => {
-              html += `
-                <label class="radio-label">
-                  <input type="radio" name="q-${q.id}" value="${opt}">
-                  <span>${opt}</span>
-                </label>`;
+              html += `<label class="radio-label"><input type="radio" name="q-${q.id}" value="${opt}"><span>${opt}</span></label>`;
             });
           }
           div.innerHTML = html;
@@ -452,6 +355,8 @@
 
       // 4. SUBMIT
       async function submitTest() {
+        var btn = document.getElementById('submit-btn');
+        if (btn.disabled) return;
         if(!confirm("Аяқтауға сенімдісіз бе?")) return;
         
         var answers = {};
@@ -463,6 +368,8 @@
            if(!confirm("Жауап белгілемедіңіз. Жалғастырасыз ба?")) return;
         }
 
+        btn.disabled = true;
+        btn.innerText = "Жіберілуде...";
         toggleLoader(true);
 
         var res = await fetchData({ action: 'submit' }, {
@@ -478,7 +385,9 @@
           document.getElementById('result-view').classList.remove('hidden');
           document.getElementById('final-score').innerText = res.score;
         } else {
-          alert("ҚАТЕ: " + (res.message || "Белгісіз қате"));
+          alert("ҚАТЕ: " + (res ? res.message : "Сервер жауап бермеді"));
+          btn.disabled = false;
+          btn.innerText = "Аяқтау";
         }
       }
     </script>
