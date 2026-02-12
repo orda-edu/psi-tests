@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Orda Psi Test</title>
+    <title>Psi Test</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -181,8 +181,18 @@
 
       <div id="login-view">
         <h2>Психологиялық тесттер</h2>
+        
+        <label>Курс / Сынып:</label>
+        <select id="course-select">
+            <option value="" disabled selected>Курсты таңдаңыз...</option>
+            <option value="1 cours">1-курс</option>
+            <option value="2 cours">2-курс</option>
+            <option value="3 cours">3-курс</option>
+        </select>
+
         <label>Логин (ID)</label>
         <input type="text" id="login" placeholder="Мысалы: ps001">
+        
         <label>Құпия сөз / Пароль</label>
         <div class="password-wrapper">
             <input type="password" id="password" placeholder="••••••">
@@ -190,6 +200,7 @@
                 <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
             </div>
         </div>
+
         <button onclick="doLogin()">Жүйеге кіру / Вход</button>
         <p id="login-error" class="error-msg"></p>
       </div>
@@ -228,12 +239,12 @@
     </div>
 
     <script>
-      const API_URL = "https://script.google.com/macros/s/AKfycbwmjhtbi7SxVqZHgU8qgs6BCMmk5TOTztcIAFGvkvSW-3USJKN9tF8mlkVbY7kyy7Mf/exec"; 
+      const API_URL = "https://script.google.com/macros/s/AKfycbzkKLruQnUKuemPxU5U6UjWFWO0a8CrCLv8AKNos7SbVXX86eT2TT8BF6AoOrp0azXN-w/exec"; 
       
       var currentUser = {};
       var selectedLang = "";
       var currentTestName = ""; 
-      var preloadedQuestions = null; // ФОНДА ЖҮКТЕУ АЙНЫМАЛЫСЫ
+      var preloadedQuestions = null; 
 
       // --- 1. DARK MODE & INIT ---
       const moonIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
@@ -263,11 +274,24 @@
       }
       window.onload = initTheme;
 
-      // --- 2. HELPERS ---
+      // --- 2. HELPERS (PASSWORD TOGGLE ADDED) ---
+      
+      // ЖАҢАРТЫЛҒАН: Парольді көрсету/жасыру
       function togglePassword() {
         var input = document.getElementById("password");
-        if (input.type === "password") { input.type = "text"; } else { input.type = "password"; }
+        var iconDiv = document.querySelector(".toggle-icon");
+        
+        if (input.type === "password") {
+            input.type = "text";
+            // Сызылған көз иконкасы
+            iconDiv.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>`;
+        } else {
+            input.type = "password";
+            // Ашық көз иконкасы
+            iconDiv.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+        }
       }
+
       function toggleLoader(show) { document.getElementById('loader').classList.toggle('hidden', !show); }
 
       async function fetchData(params, postBody = null) {
@@ -290,12 +314,26 @@
 
       // --- 3. LOGIN & SETUP ---
       async function doLogin() {
+        var course = document.getElementById('course-select').value; // Курс
         var log = document.getElementById('login').value;
         var pass = document.getElementById('password').value;
-        if(!log || !pass) return;
+
+        if (!course) {
+             document.getElementById('login-error').innerText = "Курсты таңдаңыз!";
+             return;
+        }
+        if(!log || !pass) {
+             document.getElementById('login-error').innerText = "Логин мен парольді енгізіңіз!";
+             return;
+        }
 
         toggleLoader(true);
-        var res = await fetchData({ action: 'login', login: log, password: pass });
+        var res = await fetchData({ 
+             action: 'login', 
+             course: course, 
+             login: log, 
+             password: pass 
+        });
         toggleLoader(false);
         
         if (res && res.status === 'success') {
@@ -304,7 +342,6 @@
           document.getElementById('setup-view').classList.remove('hidden');
           document.getElementById('user-name').innerText = res.name;
           
-          // Тест тізімін толтыру (Сервер бірден жібереді)
           var sel = document.getElementById('test-select');
           sel.innerHTML = '<option value="" disabled selected>Тізімнен таңдаңыз...</option>';
           if (res.tests) {
@@ -314,7 +351,7 @@
              });
           }
         } else {
-          document.getElementById('login-error').innerText = "Логин немесе пароль қате!";
+          document.getElementById('login-error').innerText = res ? res.message : "Байланыс қатесі!";
         }
       }
 
@@ -323,7 +360,6 @@
         document.getElementById('lang-section').classList.toggle('active', !!testName);
       }
 
-      // ОПТИМИЗАЦИЯ: Тіл таңдалғанда сұрақтарды фонда жүктейміз
       function selectLang(lang, btn) {
         var testName = document.getElementById('test-select').value;
         if (!testName) { alert("Алдымен тестті таңдаңыз!"); return; }
@@ -333,7 +369,6 @@
         btn.classList.add('selected');
         document.getElementById('start-btn').disabled = false;
 
-        // Фонда сұрау жіберу
         preloadedQuestions = null;
         fetchData({ 
             action: 'getQuestions', 
@@ -347,13 +382,20 @@
         });
       }
 
-      // --- 4. START TEST ---
+      // --- 4. START TEST (ТҮЗЕТІЛГЕН: Лимит қатесін көрсетеді) ---
       async function startTest() {
-        currentTestName = document.getElementById('test-select').value;
+        var testName = document.getElementById('test-select').value;
+        if (!testName) {
+            alert("Қате: Тест таңдалмаған! Тізімнен тестті таңдаңыз.");
+            return;
+        }
+        if (!selectedLang) return;
+
+        currentTestName = testName; 
         toggleLoader(true);
 
-        // Кэшті тексеру
         if (preloadedQuestions) {
+             console.log("Кэш қолданылды");
              renderQuestions(preloadedQuestions);
              toggleLoader(false);
              return;
@@ -366,11 +408,39 @@
             userName: currentUser.name 
         });
         
-        toggleLoader(false);
         if (res && res.status === 'success') {
+          toggleLoader(false);
           renderQuestions(res.questions);
-        } else {
-          alert(res.message || "Сұрақтар табылмады");
+        } 
+        else {
+          // ЛИМИТ ТЕКСЕРУ (МАҢЫЗДЫ)
+          if (res && res.message && (res.message.includes("Лимит") || res.message.includes("Limit"))) {
+              toggleLoader(false);
+              alert("⛔ " + res.message); // Қатені көрсету
+              return; 
+          }
+
+          console.log("Бірінші әрекет сәтсіз, қайта көруде...");
+          setTimeout(async function() {
+              var retryRes = await fetchData({ 
+                  action: 'getQuestions', 
+                  testName: currentTestName, 
+                  lang: selectedLang,
+                  userName: currentUser.name 
+              });
+              toggleLoader(false);
+              
+              if (retryRes && retryRes.status === 'success') {
+                  renderQuestions(retryRes.questions);
+              } else {
+                  // Екінші ретте де Лимитті тексереміз
+                  if (retryRes && retryRes.message && (retryRes.message.includes("Лимит") || retryRes.message.includes("Limit"))) {
+                       alert("⛔ " + retryRes.message);
+                  } else {
+                       console.log("Сұрақтар табылмады. Хабарлама жасырылды.");
+                  }
+              }
+          }, 2000); 
         }
       }
 
@@ -404,7 +474,6 @@
         var btn = document.getElementById('submit-btn');
         if (btn.disabled) return;
 
-        // Валидация
         var questionBlocks = document.querySelectorAll('.question-block');
         var allAnswered = true;
         var firstUnanswered = null;
