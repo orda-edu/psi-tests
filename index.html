@@ -3,11 +3,11 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Orda psi test</title>
+    <title>Orda Psi Test</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-      /* --- ДИЗАЙН --- */
+      /* --- НЕГІЗГІ ДИЗАЙН --- */
       :root {
         --primary-color: #4f46e5;
         --primary-hover: #4338ca;
@@ -15,7 +15,22 @@
         --card-bg: #ffffff;
         --text-main: #1f2937;
         --text-secondary: #6b7280;
+        --input-bg: #f9fafb;
+        --input-border: #e5e7eb;
         --success-color: #10b981;
+        --error-color: #ef4444;
+        --error-bg: #fee2e2;
+      }
+
+      /* --- ТҮНГІ РЕЖИМ (DARK MODE) --- */
+      body.dark-mode {
+        --bg-gradient: linear-gradient(135deg, #111827 0%, #1f2937 100%);
+        --card-bg: #1f2937;
+        --text-main: #f9fafb;
+        --text-secondary: #9ca3af;
+        --input-bg: #374151;
+        --input-border: #4b5563;
+        --error-bg: rgba(239, 68, 68, 0.2);
       }
 
       body { 
@@ -25,12 +40,17 @@
         color: var(--text-main);
         min-height: 100vh;
         display: flex; align-items: center; justify-content: center;
+        transition: background 0.3s ease;
       }
+
+      body.dark-mode h2, body.dark-mode h3, body.dark-mode .question-text { color: #ffffff !important; }
 
       .container { 
         width: 100%; max-width: 500px; margin: 20px; 
         background: var(--card-bg); padding: 30px; 
         border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.1); 
+        transition: background 0.3s ease;
+        position: relative;
       }
 
       h2, h3 { text-align: center; color: #111827; font-weight: 700; margin-bottom: 20px; }
@@ -38,42 +58,26 @@
       /* Input Styles */
       input[type="text"], input[type="password"], select { 
         width: 100%; padding: 16px; margin-bottom: 20px; 
-        border: 2px solid #e5e7eb; border-radius: 16px; 
-        box-sizing: border-box; font-size: 16px; background: #f9fafb; 
-        transition: 0.3s; font-family: inherit;
+        border: 2px solid var(--input-border); border-radius: 16px; 
+        box-sizing: border-box; font-size: 16px; background: var(--input-bg); 
+        color: var(--text-main); transition: 0.3s; font-family: inherit;
       }
       input:focus, select:focus { 
         outline: none; border-color: var(--primary-color); 
-        background: #fff; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
       }
-      
       label { font-weight: 600; font-size: 14px; color: var(--text-secondary); margin-bottom: 8px; display: block; margin-left: 4px; }
 
-      /* --- PASSWORD TOGGLE STYLES (ЖАҢА) --- */
-      .password-wrapper {
-        position: relative;
-        margin-bottom: 20px;
-      }
-      .password-wrapper input {
-        margin-bottom: 0; /* Wrapper handles spacing */
-        padding-right: 50px; /* Icon-ға орын қалдыру */
-      }
+      /* Password Toggle */
+      .password-wrapper { position: relative; margin-bottom: 20px; }
+      .password-wrapper input { margin-bottom: 0; padding-right: 50px; }
       .toggle-icon {
-        position: absolute;
-        right: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        cursor: pointer;
-        color: #9ca3af;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: color 0.2s;
+        position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
+        cursor: pointer; color: #9ca3af; display: flex; align-items: center; justify-content: center;
       }
       .toggle-icon:hover { color: var(--primary-color); }
-      .toggle-icon svg { width: 24px; height: 24px; }
 
-      /* Button Styles */
+      /* Buttons */
       button { 
         width: 100%; padding: 16px; background-color: var(--primary-color); 
         color: white; border: none; border-radius: 16px; 
@@ -81,32 +85,59 @@
         transition: all 0.2s; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
       }
       button:active { transform: scale(0.98); }
-      button:disabled { background-color: #9ca3af !important; cursor: not-allowed; box-shadow: none; color: #f3f4f6; opacity: 0.8; }
+      button:disabled { background-color: #9ca3af !important; cursor: not-allowed; box-shadow: none; opacity: 0.8; }
 
       /* Language Tabs */
       .lang-container { opacity: 0.6; pointer-events: none; transition: 0.3s; margin-top: 20px; }
       .lang-container.active { opacity: 1; pointer-events: all; }
       .lang-group { display: flex; gap: 10px; background: #f3f4f6; padding: 5px; border-radius: 14px; }
+      body.dark-mode .lang-group { background: #374151; }
       .lang-btn { 
         flex: 1; padding: 10px; border-radius: 10px; text-align: center; 
         font-weight: 600; font-size: 14px; color: var(--text-secondary); 
         cursor: pointer; transition: 0.2s; 
       }
       .lang-btn.selected { background-color: #fff; color: var(--primary-color); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+      body.dark-mode .lang-btn.selected { background-color: #4f46e5; color: white; }
 
       /* Questions */
-      .question-block { animation: fadeIn 0.4s ease; }
+      .question-block { 
+        animation: fadeIn 0.4s ease; 
+        padding: 10px; 
+        border-radius: 16px;
+        transition: 0.3s;
+        border: 2px solid transparent; /* Жиек орынын дайындау */
+      }
       .question-text { font-size: 18px; font-weight: 600; margin-bottom: 20px; line-height: 1.5; color: #111827; }
 
+      /* Radio Styles */
       .radio-label { 
         display: flex; align-items: center; padding: 16px; margin: 12px 0; 
-        cursor: pointer; border-radius: 16px; background-color: #fff; 
-        border: 2px solid #e5e7eb; transition: all 0.2s;
+        cursor: pointer; border-radius: 16px; background-color: var(--card-bg); 
+        border: 2px solid var(--input-border); transition: all 0.2s;
       }
-      .radio-label:hover { background-color: #f9fafb; border-color: #d1d5db; }
+      .radio-label:hover { border-color: #d1d5db; }
+      body.dark-mode .radio-label:hover { border-color: #6b7280; background-color: #374151; }
       .radio-label:has(input:checked) { border-color: var(--primary-color); background-color: #eef2ff; }
+      body.dark-mode .radio-label:has(input:checked) { background-color: #312e81; border-color: var(--primary-color); }
       .radio-label input:checked + span { color: var(--primary-color); font-weight: 600; }
+      body.dark-mode .radio-label input:checked + span { color: #a5b4fc; }
+      .radio-label span { color: var(--text-main); }
       .radio-label input { width: 20px; height: 20px; margin-right: 15px; accent-color: var(--primary-color); }
+
+      /* ҚАТЕ ЖАУАП СТИЛІ (Validation Error) */
+      .question-block.error {
+        border-color: var(--error-color);
+        background-color: var(--error-bg);
+        animation: shake 0.5s;
+      }
+      @keyframes shake {
+        0% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        50% { transform: translateX(5px); }
+        75% { transform: translateX(-5px); }
+        100% { transform: translateX(0); }
+      }
 
       /* Result */
       .result-circle {
@@ -114,31 +145,44 @@
         border-radius: 50%; margin: 20px auto; display: flex; flex-direction: column; 
         align-items: center; justify-content: center; animation: popIn 0.6s;
       }
-      @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-      @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+      body.dark-mode .result-circle { background-color: #064e3b; border-color: #065f46; }
       .score-value { font-size: 56px; font-weight: 800; color: #065f46; line-height: 1; }
-      #test-title { background: #eef2ff; color: var(--primary-color); padding: 10px 20px; border-radius: 50px; display: inline-block; font-size: 16px; margin-bottom: 30px; }
+      body.dark-mode .score-value { color: #34d399; }
+      body.dark-mode .result-circle span:first-child { color: #34d399; }
 
+      /* Theme Toggle Btn */
+      .theme-toggle-btn {
+        position: fixed; top: 20px; right: 20px; background: var(--card-bg);
+        border: 2px solid var(--input-border); color: var(--text-secondary);
+        width: 45px; height: 45px; border-radius: 50%; display: flex;
+        align-items: center; justify-content: center; cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 1000; padding: 0;
+      }
+      
       @media screen and (max-width: 600px) {
         .container { margin: 0; border-radius: 0; min-height: 100vh; padding: 20px; box-shadow: none; }
         #start-btn, #submit-btn { position: fixed; bottom: 20px; left: 20px; right: 20px; width: calc(100% - 40px); z-index: 100; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         #test-view { padding-bottom: 80px; }
+        .theme-toggle-btn { top: 15px; right: 15px; width: 40px; height: 40px; }
       }
       .hidden { display: none !important; }
-      .error-msg { color: #ef4444; text-align: center; margin-top: 15px; font-size: 14px; }
+      .error-msg { color: var(--error-color); text-align: center; margin-top: 15px; font-size: 14px; }
       #loader { text-align: center; color: var(--text-secondary); margin: 20px 0; font-size: 14px; }
     </style>
   </head>
   <body>
+
+    <button class="theme-toggle-btn" onclick="toggleTheme()" id="theme-btn" title="Ауыстыру">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    </button>
+
     <div class="container">
-      <div id="loader" class="hidden"> Мәліметтер жүктелуде...</div>
+      <div id="loader" class="hidden"> Жүктелуде...</div>
 
       <div id="login-view">
         <h2>Психологиялық тесттер</h2>
-        
         <label>Логин (ID)</label>
         <input type="text" id="login" placeholder="Мысалы: ps001">
-        
         <label>Құпия сөз / Пароль</label>
         <div class="password-wrapper">
             <input type="password" id="password" placeholder="••••••">
@@ -146,19 +190,16 @@
                 <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
             </div>
         </div>
-
         <button onclick="doLogin()">Жүйеге кіру / Вход</button>
         <p id="login-error" class="error-msg"></p>
       </div>
 
       <div id="setup-view" class="hidden">
         <h3>Сәлем / Привет, <span id="user-name" style="color: var(--primary-color);"></span>!</h3>
-        
         <label>Тестті таңдаңыз / Выберите тест: <span style="color:red">*</span></label>
         <select id="test-select" onchange="enableLangSelection()">
           <option value="" disabled selected>Тізімнен таңдаңыз...</option>
         </select>
-
         <div id="lang-section" class="lang-container">
           <label>Тіл / Язык: <span style="color:red">*</span></label>
           <div class="lang-group">
@@ -166,12 +207,11 @@
             <div class="lang-btn" onclick="selectLang('RU', this)">RUS</div>
           </div>
         </div>
-
         <button id="start-btn" onclick="startTest()" disabled style="margin-top: 30px;">Бастау / Начать</button>
       </div>
 
       <div id="test-view" class="hidden" style="text-align: center;">
-        <div id="test-title">Student Name</div>
+        <div id="test-title" style="background: #eef2ff; color: var(--primary-color); padding: 10px 20px; border-radius: 50px; display: inline-block; font-size: 16px; margin-bottom: 30px;">Student Name</div>
         <div id="questions-container" style="text-align: left;"></div>
         <button id="submit-btn" onclick="submitTest()" style="background-color: var(--success-color);">Аяқтау / Завершить</button>
       </div>
@@ -182,37 +222,53 @@
           <span style="font-size: 14px; color: #065f46; font-weight: 600; margin-top: 10px;">ҰПАЙ / БАЛЛ</span>
           <span id="final-score" class="score-value">0</span>
         </div>
-        <p style="color: #6b7280; margin-bottom: 30px; line-height: 1.6;">Тест аяқталды.<br>Нәтиже сақталды.</p>
+        <p style="color: var(--text-secondary); margin-bottom: 30px; line-height: 1.6;">Тест аяқталды.<br>Нәтиже сақталды.</p>
         <button onclick="location.reload()" style="background-color: #9ca3af; box-shadow: none; color: #fff;">Шығу</button>
       </div>
     </div>
 
     <script>
-      const API_URL = "https://script.google.com/macros/s/AKfycbwMp5E0MGp7bM6gB5x-qckB9ud-Ed9pI3aM9XmzZGesMpNvRPFqDO5lWh7Wtp3jlSsR/exec"; 
+      const API_URL = "https://script.google.com/macros/s/AKfycbwmjhtbi7SxVqZHgU8qgs6BCMmk5TOTztcIAFGvkvSW-3USJKN9tF8mlkVbY7kyy7Mf/exec"; 
       
       var currentUser = {};
       var selectedLang = "";
       var currentTestName = ""; 
+      var preloadedQuestions = null; // ФОНДА ЖҮКТЕУ АЙНЫМАЛЫСЫ
 
-      // --- ПАРОЛЬДІ КӨРСЕТУ/ЖАСЫРУ ФУНКЦИЯСЫ (ЖАҢА) ---
-      function togglePassword() {
-        var input = document.getElementById("password");
-        var iconDiv = document.querySelector(".toggle-icon");
-        
-        if (input.type === "password") {
-            input.type = "text";
-            // Eye Slash (Сызылған көз)
-            iconDiv.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>';
+      // --- 1. DARK MODE & INIT ---
+      const moonIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
+      const sunIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+
+      function initTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        const btn = document.getElementById('theme-btn');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            btn.innerHTML = sunIcon;
         } else {
-            input.type = "password";
-            // Eye Open (Ашық көз)
-            iconDiv.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+            document.body.classList.remove('dark-mode');
+            btn.innerHTML = moonIcon;
         }
       }
-
-      function toggleLoader(show) {
-        document.getElementById('loader').classList.toggle('hidden', !show);
+      function toggleTheme() {
+        const btn = document.getElementById('theme-btn');
+        document.body.classList.toggle('dark-mode');
+        if (document.body.classList.contains('dark-mode')) {
+            localStorage.setItem('theme', 'dark');
+            btn.innerHTML = sunIcon;
+        } else {
+            localStorage.setItem('theme', 'light');
+            btn.innerHTML = moonIcon;
+        }
       }
+      window.onload = initTheme;
+
+      // --- 2. HELPERS ---
+      function togglePassword() {
+        var input = document.getElementById("password");
+        if (input.type === "password") { input.type = "text"; } else { input.type = "password"; }
+      }
+      function toggleLoader(show) { document.getElementById('loader').classList.toggle('hidden', !show); }
 
       async function fetchData(params, postBody = null) {
         try {
@@ -232,7 +288,7 @@
         }
       }
 
-      // 1. LOGIN
+      // --- 3. LOGIN & SETUP ---
       async function doLogin() {
         var log = document.getElementById('login').value;
         var pass = document.getElementById('password').value;
@@ -240,87 +296,77 @@
 
         toggleLoader(true);
         var res = await fetchData({ action: 'login', login: log, password: pass });
+        toggleLoader(false);
         
         if (res && res.status === 'success') {
           currentUser = res;
           document.getElementById('login-view').classList.add('hidden');
           document.getElementById('setup-view').classList.remove('hidden');
           document.getElementById('user-name').innerText = res.name;
-          loadTestNames();
+          
+          // Тест тізімін толтыру (Сервер бірден жібереді)
+          var sel = document.getElementById('test-select');
+          sel.innerHTML = '<option value="" disabled selected>Тізімнен таңдаңыз...</option>';
+          if (res.tests) {
+             res.tests.forEach(t => {
+                var opt = document.createElement('option');
+                opt.value = t; opt.innerText = t; sel.appendChild(opt);
+             });
+          }
         } else {
-          toggleLoader(false);
           document.getElementById('login-error').innerText = "Логин немесе пароль қате!";
-        }
-      }
-
-      // 2. SETUP & VALIDATION
-      async function loadTestNames() {
-        var res = await fetchData({ action: 'getTestNames' });
-        toggleLoader(false);
-        var sel = document.getElementById('test-select');
-        sel.innerHTML = '<option value="" disabled selected>Тізімнен таңдаңыз...</option>';
-        if (res && res.status === 'success') {
-          res.tests.forEach(t => {
-            var opt = document.createElement('option');
-            opt.value = t; opt.innerText = t; sel.appendChild(opt);
-          });
         }
       }
 
       function enableLangSelection() {
         var testName = document.getElementById('test-select').value;
-        var langSection = document.getElementById('lang-section');
-        var startBtn = document.getElementById('start-btn');
-
-        selectedLang = ""; 
-        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('selected'));
-        startBtn.disabled = true;
-
-        if (testName) {
-          langSection.classList.add('active');
-        } else {
-          langSection.classList.remove('active');
-        }
+        document.getElementById('lang-section').classList.toggle('active', !!testName);
       }
 
+      // ОПТИМИЗАЦИЯ: Тіл таңдалғанда сұрақтарды фонда жүктейміз
       function selectLang(lang, btn) {
         var testName = document.getElementById('test-select').value;
-        if (!testName) {
-            alert("Алдымен тестті таңдаңыз!");
-            return;
-        }
+        if (!testName) { alert("Алдымен тестті таңдаңыз!"); return; }
 
         selectedLang = lang;
         document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
         document.getElementById('start-btn').disabled = false;
-      }
 
-      // 3. START TEST
-      async function startTest() {
-        var testName = document.getElementById('test-select').value;
-        
-        if (!testName) {
-            alert("Қате: Тест таңдалмаған! Тізімнен тестті таңдаңыз.");
-            return;
-        }
-        if (!selectedLang) {
-            alert("Қате: Тіл таңдалмаған!");
-            return;
-        }
-
-        currentTestName = testName; 
-        toggleLoader(true);
-        
-        var res = await fetchData({ 
+        // Фонда сұрау жіберу
+        preloadedQuestions = null;
+        fetchData({ 
             action: 'getQuestions', 
             testName: testName, 
+            lang: selectedLang,
+            userName: currentUser.name 
+        }).then(res => {
+            if (res && res.status === 'success') {
+                preloadedQuestions = res.questions;
+            }
+        });
+      }
+
+      // --- 4. START TEST ---
+      async function startTest() {
+        currentTestName = document.getElementById('test-select').value;
+        toggleLoader(true);
+
+        // Кэшті тексеру
+        if (preloadedQuestions) {
+             renderQuestions(preloadedQuestions);
+             toggleLoader(false);
+             return;
+        }
+
+        var res = await fetchData({ 
+            action: 'getQuestions', 
+            testName: currentTestName, 
             lang: selectedLang,
             userName: currentUser.name 
         });
         
         toggleLoader(false);
-
         if (res && res.status === 'success') {
           renderQuestions(res.questions);
         } else {
@@ -353,58 +399,39 @@
         });
       }
 
-     // 4. SUBMIT (ТОЛЫҚ БЕЛГІЛЕУДІ МІНДЕТТЕУ)
+      // --- 5. SUBMIT (VALIDATION & LIMIT) ---
       async function submitTest() {
         var btn = document.getElementById('submit-btn');
         if (btn.disabled) return;
 
-        // 1. БАРЛЫҚ СҰРАҚТАРДЫ ТЕКСЕРУ
+        // Валидация
         var questionBlocks = document.querySelectorAll('.question-block');
         var allAnswered = true;
         var firstUnanswered = null;
 
         questionBlocks.forEach(block => {
-            // Блок ішіндегі input-тарды іздейміз
             var textInput = block.querySelector('input[type=text]');
             var radios = block.querySelectorAll('input[type=radio]');
             var isAnswered = false;
 
-            // Егер текстік сұрақ болса
-            if (textInput) {
-                if (textInput.value.trim() !== "") isAnswered = true;
-            } 
-            // Егер тест (radio) болса
-            else if (radios.length > 0) {
-                radios.forEach(r => { if (r.checked) isAnswered = true; });
-            }
+            if (textInput) { if (textInput.value.trim() !== "") isAnswered = true; } 
+            else if (radios.length > 0) { radios.forEach(r => { if (r.checked) isAnswered = true; }); }
 
-            // Егер жауап берілмесе - ҚЫЗЫЛМЕН БОЯУ
             if (!isAnswered) {
                 allAnswered = false;
-                block.style.border = "2px solid #ef4444"; // Қызыл жиек
-                block.style.borderRadius = "10px";
-                block.style.padding = "10px";
-                block.style.backgroundColor = "#fee2e2"; // Ашық қызыл фон
-                
-                if (!firstUnanswered) firstUnanswered = block; // Ең бірінші қатені есте сақтау
+                block.classList.add('error');
+                if (!firstUnanswered) firstUnanswered = block; 
             } else {
-                // Жауап берілсе, стильді тазалау
-                block.style.border = "none";
-                block.style.backgroundColor = "transparent";
+                block.classList.remove('error');
             }
         });
 
-        // 2. ЕГЕР БЕЛГІЛЕНБЕГЕН СҰРАҚ БОЛСА - ТОҚТАТУ
         if (!allAnswered) {
-            alert("Қате: Барлық сұрақтарға жауап беру міндетті!\nБелгіленбеген сұрақтар қызыл түспен көрсетілді.");
-            // Жауапсыз қалған бірінші сұраққа апару (scroll)
-            if (firstUnanswered) {
-                firstUnanswered.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-            return; // Функцияны осы жерден тоқтатамыз
+            alert("Барлық сұрақтарға жауап беру міндетті!");
+            if (firstUnanswered) firstUnanswered.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return; 
         }
 
-        // 3. БАРЛЫҒЫ ДҰРЫС БОЛСА - ЖІБЕРУ
         if(!confirm("Аяқтауға сенімдісіз бе?")) return;
         
         var answers = {};
@@ -430,11 +457,14 @@
           document.getElementById('final-score').innerText = res.score;
         } else {
           alert("ҚАТЕ: " + (res ? res.message : "Сервер жауап бермеді"));
-          btn.disabled = false;
-          btn.innerText = "Аяқтау";
+          if (res && res.message && res.message.includes("Лимит")) {
+             btn.innerText = "Тапсырылған";
+          } else {
+             btn.disabled = false;
+             btn.innerText = "Аяқтау";
+          }
         }
       }
     </script>
   </body>
 </html>
-
